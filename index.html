@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 20px;
+            font-size: 18px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>JavaScript Calculator</h1>
+
+    <div class="calculator">
+        <button onclick="appendNumber('7')">7</button>
+        <button onclick="appendNumber('8')">8</button>
+        <button onclick="appendNumber('9')">9</button>
+        <button onclick="setOperation('/')">/</button>
+
+        <button onclick="appendNumber('4')">4</button>
+        <button onclick="appendNumber('5')">5</button>
+        <button onclick="appendNumber('6')">6</button>
+        <button onclick="setOperation('*')">*</button>
+
+        <button onclick="appendNumber('1')">1</button>
+        <button onclick="appendNumber('2')">2</button>
+        <button onclick="appendNumber('3')">3</button>
+        <button onclick="setOperation('-')">-</button>
+
+        <button onclick="appendNumber('0')">0</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="clearResult()">C</button>
+        <button onclick="setOperation('+')">+</button>
+    </div>
+
+    <div id="result">Result: 0</div>
+
+    <script>
+        let currentInput = '';
+        let previousInput = '';
+        let operation = '';
+
+        // Function to append a number to the current input
+        function appendNumber(number) {
+            currentInput += number;
+            updateResult();
+        }
+
+        // Function to set the operation
+        function setOperation(op) {
+            if (currentInput === '') return; // Prevent operation if there's no input
+            if (previousInput !== '') {
+                calculate(); // Calculate the previous operation if exists
+            }
+            operation = op;
+            previousInput = currentInput;
+            currentInput = ''; // Clear current input for next number
+        }
+
+        // Function to perform calculation
+        function calculate() {
+            let computation;
+            const prev = parseFloat(previousInput);
+            const curr = parseFloat(currentInput);
+
+            if (isNaN(prev) || isNaN(curr)) return; // Prevent calculation if inputs are invalid
+
+            switch (operation) {
+                case '+':
+                    computation = prev + curr;
+                    break;
+                case '-':
+                    computation = prev - curr;
+                    break;
+                case '*':
+                    computation = prev * curr;
+                    break;
+                case '/':
+                    computation = prev / curr;
+                    break;
+                default:
+                    return;
+            }
+
+            currentInput = computation.toString(); // Update the current input with result
+            operation = ''; // Reset operation
+            previousInput = ''; // Clear previous input
+            updateResult(); // Display the new result
+        }
+
+        // Function to update the displayed result
+        function updateResult() {
+            document.getElementById('result').innerText = "Result: " + (currentInput || '0');
+        }
+
+        // Function to clear the current input and result
+        function clearResult() {
+            currentInput = '';
+            previousInput = '';
+            operation = '';
+            updateResult(); // Reset display
+        }
+    </script>
+
+</body>
+</html>
