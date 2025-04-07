@@ -1,126 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: Arial, sans-serif;
-        }
-        .calculator {
-            display: grid;
-            grid-template-columns: repeat(4, 80px);
-            gap: 10px;
-            margin-top: 20px;
-        }
-        button {
-            padding: 20px;
-            font-size: 18px;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 24px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>My JAVASCRIPT Calculator</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(145deg, #1e1e1e, #2e2e2e);
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+     
+    .calculator {
+      background: #111;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #0f0;
+    }
+
+    .display {
+      background: black;
+      padding: 15px;
+      font-size: 2rem;
+      text-align: right;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      height: 60px;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 60px);
+      grid-gap: 15px;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 1.2rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #0f0;
+      color: black;
+    }
+
+    .operator {
+      background: #555;
+    }
+
+    .equal {
+      background: #0f0;
+      color: black;
+    }
+
+    .clear {
+      background: #f00;
+      color: white;
+    }
+  </style>
 </head>
 <body>
+    
+  <div class="calculator">
+    <h1>Tshonisile's Calculator</h1>
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button class="operator" onclick="append('/')">/</button>
 
-    <h1>JavaScript Calculator</h1>
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button class="operator" onclick="append('*')">*</button>
 
-    <div class="calculator">
-        <button onclick="appendNumber('7')">7</button>
-        <button onclick="appendNumber('8')">8</button>
-        <button onclick="appendNumber('9')">9</button>
-        <button onclick="setOperation('/')">/</button>
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button class="operator" onclick="append('-')">-</button>
 
-        <button onclick="appendNumber('4')">4</button>
-        <button onclick="appendNumber('5')">5</button>
-        <button onclick="appendNumber('6')">6</button>
-        <button onclick="setOperation('*')">*</button>
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+      <button class="operator" onclick="append('+')">+</button>
 
-        <button onclick="appendNumber('1')">1</button>
-        <button onclick="appendNumber('2')">2</button>
-        <button onclick="appendNumber('3')">3</button>
-        <button onclick="setOperation('-')">-</button>
-
-        <button onclick="appendNumber('0')">0</button>
-        <button onclick="calculate()">=</button>
-        <button onclick="clearResult()">C</button>
-        <button onclick="setOperation('+')">+</button>
+      <button class="clear" style="grid-column: span 4;" onclick="clearDisplay()">C</button>
     </div>
+  </div>
 
-    <div id="result">Result: 0</div>
+  <script>
+    let display = document.getElementById('display');
 
-    <script>
-        let currentInput = '';
-        let previousInput = '';
-        let operation = '';
+    function append(value) {
+      if (display.innerText === "0" || display.innerText === "Error") {
+        display.innerText = value;
+      } else {
+        display.innerText += value;
+      }
+    }
 
-        // Function to append a number to the current input
-        function appendNumber(number) {
-            currentInput += number;
-            updateResult();
+    function calculate() {
+      try {
+        let result = eval(display.innerText);
+
+        if (!isFinite(result)) {
+          throw new Error("Cannot divide by zero or invalid input.");
         }
 
-        // Function to set the operation
-        function setOperation(op) {
-            if (currentInput === '') return; // Prevent operation if there's no input
-            if (previousInput !== '') {
-                calculate(); // Calculate the previous operation if exists
-            }
-            operation = op;
-            previousInput = currentInput;
-            currentInput = ''; // Clear current input for next number
+        if (isNaN(result)) {
+          throw new Error("Result is not a number.");
         }
 
-        // Function to perform calculation
-        function calculate() {
-            let computation;
-            const prev = parseFloat(previousInput);
-            const curr = parseFloat(currentInput);
+        display.innerText = result;
+      } catch (err) {
+        display.innerText = "Error";
+        console.error("Calculation error:", err.message);
+      }
+    }
 
-            if (isNaN(prev) || isNaN(curr)) return; // Prevent calculation if inputs are invalid
-
-            switch (operation) {
-                case '+':
-                    computation = prev + curr;
-                    break;
-                case '-':
-                    computation = prev - curr;
-                    break;
-                case '*':
-                    computation = prev * curr;
-                    break;
-                case '/':
-                    computation = prev / curr;
-                    break;
-                default:
-                    return;
-            }
-
-            currentInput = computation.toString(); // Update the current input with result
-            operation = ''; // Reset operation
-            previousInput = ''; // Clear previous input
-            updateResult(); // Display the new result
-        }
-
-        // Function to update the displayed result
-        function updateResult() {
-            document.getElementById('result').innerText = "Result: " + (currentInput || '0');
-        }
-
-        // Function to clear the current input and result
-        function clearResult() {
-            currentInput = '';
-            previousInput = '';
-            operation = '';
-            updateResult(); // Reset display
-        }
-    </script>
-
+    function clearDisplay() {
+      display.innerText = "0";
+    }
+  </script>
 </body>
 </html>
